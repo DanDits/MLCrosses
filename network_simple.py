@@ -8,12 +8,12 @@ class CrossEntropyCost: # works best with sigmoid neuron
         return np.sum(np.nan_to_num(-y*np.log(a)-(1-y)*np.log(1-a))) # non negative value indicating the error
 
     @staticmethod
-    def delta(z, y, Neuron): # vector result for starting backpropagation
+    def delta(z, y, Neuron): # derivative of fn(a(z),y) wrt. z; vector result for starting backpropagation
         if Neuron is SigmoidNeuron:
             return Neuron.activation(z) - y
-        elif Neuron is LinearNeuron:
-            return (y - z) / (z * (1 - z))
-        return NotImplemented
+        else:
+            a = Neuron.activation(z)
+            return np.nan_to_num((a - y) * Neuron.activation_prime(z) / (a * (1 - a)))
 
 
 class QuadraticCost: # works best with linear neuron
@@ -68,14 +68,12 @@ class Network:
         results = [(np.argmax(self.feedforward(x)), np.argmax(y)) for (x, y) in data]
         return sum(int(x == y) for (x, y) in results)
 
-    def total_cost(self, data, lmbda):
-        # Given vectorized data, calculate the cost to the estimate, optionally using regularisation
+    def total_cost(self, data):
+        # Given vectorized data, calculate the cost to the estimate
         cost = 0.
         for x, y in data:
             a = self.feedforward(x)
             cost += self.cost.fn(a, y) / len(data)
-        # regularisation
-        cost += 0.5 * (lmbda / len(data)) * np.linalg.norm(self.weight) ** 2
         return cost
 
     def backprop(self, x, y):
@@ -90,7 +88,7 @@ class Network:
         nabla_w = np.dot(delta, x.transpose())
         return nabla_b, nabla_w
 
-    def update_mini_batch(self, mini_batch, eta, lmbda, n):
+    def update_mini_batch(self, mini_batch, eta):
         # update network weight and bias using gradient descent
         nabla_b = np.zeros(self.bias.shape)
         nabla_w = np.zeros(self.weight.shape)
@@ -98,21 +96,18 @@ class Network:
             delta_nabla_b, delta_nabla_w = self.backprop(x, y)
             nabla_b += delta_nabla_b
             nabla_w += delta_nabla_w
-        self.weight = ((1 - eta * (lmbda / n)) * self.weight -
-                       (eta/len(mini_batch)) * nabla_w)
+        self.weight -= (eta / len(mini_batch)) * nabla_w
         self.bias -= (eta / len(mini_batch)) * nabla_b
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta, lmbda=0., evaluation_data=None):
-        n = len(training_data)
-
+    def SGD(self, training_data, epochs, mini_batch_size, eta, evaluation_data=None):
         for j in range(epochs):
             random.shuffle(training_data)
-            mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, n, mini_batch_size)]
+            mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, len(training_data), mini_batch_size)]
             for mini_batch in mini_batches:
-                self.update_mini_batch(mini_batch, eta, lmbda, n)
+                self.update_mini_batch(mini_batch, eta)
             print("Epoch %s training complete" % j)
             if evaluation_data:
-                cost = self.total_cost(evaluation_data, lmbda)
+                cost = self.total_cost(evaluation_data)
                 print("Cost on evaluation data: {}".format(cost))
                 accuracy = self.accuracy(evaluation_data)
                 print("Accuracy on evaluation data: {} / {}".format(accuracy, len(evaluation_data)))
