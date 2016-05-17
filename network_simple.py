@@ -25,7 +25,7 @@ class QuadraticCost: # works best with linear neuron
         return (Neuron.activation(z) - y) * Neuron.activation_prime(z)
 
 # How a neuron in the network is activated, that is a continuous mapping from real values to the range [0,1]
-class SigmoidNeuron():
+class SigmoidNeuron:
     @staticmethod
     def activation(z):
         # When the neuron is activated and fired, a vectorized value between 0 and 1
@@ -36,7 +36,7 @@ class SigmoidNeuron():
         return SigmoidNeuron.activation(z) * (1. - SigmoidNeuron.activation(z))
 
 
-class LinearNeuron():
+class LinearNeuron:
     @staticmethod
     def activation(z):
         return np.clip(z, -0.5, 0.5) + 0.5
@@ -46,6 +46,19 @@ class LinearNeuron():
         x[np.where(z < -0.5)] = 0.
         x[np.where(z > 0.5)] = 0.
         return x
+
+
+class IdentityNeuron: # Only working with QuadraticCost
+    @staticmethod
+    def activation(z):
+        return z
+    buffer = {}
+    @staticmethod
+    def activation_prime(z):
+        if z.shape in IdentityNeuron.buffer:
+            return IdentityNeuron.buffer[z.shape]
+        IdentityNeuron.buffer[z.shape] = np.ones(z.shape)
+        return IdentityNeuron.activation_prime(z)
 
 
 class Network:
