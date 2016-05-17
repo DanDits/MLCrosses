@@ -21,9 +21,9 @@ def demo_improved():
     net.large_weight_initializer()
     net.SGD(training_data, 30, 10, 0.5, evaluation_data=test_data, monitor_evaluation_accuracy = True)
 
-def load_crosses(use_cancelled=False):
+def load_crosses(shades_of_grey=256, use_cancelled=False):
     import crosses_loader
-    training_data, test_data = crosses_loader.load_data(use_cancelled=use_cancelled)
+    training_data, test_data = crosses_loader.load_data(shades_of_grey=256, use_cancelled=use_cancelled)
     return training_data, test_data
 
 def demo_crosses(training_data, test_data):
@@ -58,13 +58,12 @@ def demo_crosses_simple(training_data, test_data, eta, cost, neuron):
     # demo.demo_crosses_simple(training, test, 0.1, cross, sigmoid) # peak 6840; cost=inf if rate >=0.5 but working
     # demo.demo_crosses_simple(training, test, 0.1, cross, linear) # no working learning rate found (zero activated value doesnt work with logarithm in cost)
 
-    net.SGD(training_data, 60, 50, eta, evaluation_data=test_data)
+    net.SGD(training_data, 60, 50, eta, evaluation_data=test_data, print_errors=True)
 
 def run_simple():
-    training, test = load_crosses()
+    training, test = load_crosses(shades_of_grey=256)
     import network_simple as network
     demo_crosses_simple(training, test, 0.1, network.CrossEntropyCost, network.SigmoidNeuron)
 
 if __name__ == "__main__":
     run_simple()
-    pass

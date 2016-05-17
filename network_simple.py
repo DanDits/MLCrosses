@@ -102,7 +102,7 @@ class Network:
         self.weight -= (eta / len(mini_batch)) * nabla_w
         self.bias -= (eta / len(mini_batch)) * nabla_b
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta, evaluation_data=None):
+    def SGD(self, training_data, epochs, mini_batch_size, eta, evaluation_data=None, print_errors=False):
         for j in range(epochs):
             random.shuffle(training_data)
             mini_batches = [training_data[k:k+mini_batch_size] for k in range(0, len(training_data), mini_batch_size)]
@@ -112,5 +112,5 @@ class Network:
             if evaluation_data:
                 cost = self.total_cost(evaluation_data)
                 print("Cost on evaluation data: {}".format(cost))
-                accuracy = self.accuracy(evaluation_data)
+                accuracy = self.accuracy(evaluation_data, print_errors)
                 print("Accuracy on evaluation data: {} / {}".format(accuracy, len(evaluation_data)))
