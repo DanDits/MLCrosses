@@ -1,28 +1,39 @@
-import os
 from PIL import Image
 import numpy as np
 import random
+import tarfile
 
 
-def load_data(path="/home/daniel/PycharmProjects/machinelearning/data/crosses/", use_cancelled=False):
+def load_data(path="/home/daniel/PycharmProjects/machinelearning/data/crosses/crosses.tar.gz", use_cancelled=False):
+
+    # Types are the classes of crosses we want to classify
+    # we got 21867 empty, 5575 crossed and only 66 cancelled in default dataset
     types = ["empty", "crossed"]
     if use_cancelled:
         types.append("cancelled")
-    type_files = {cross_type: os.listdir(path + "work_type_" + cross_type) for cross_type in types}
-    # we got 21867 empty, 5575 crossed and only 66 cancelled in default dataset
+
+    # Build mappings of these type names to the label values, to the vectorized labels and the actual data
     type_label_value = {cross_type: types.index(cross_type) for cross_type in types}
     type_label = {cross_type: _vectorized_label(type_label_value[cross_type], len(types)) for cross_type in types}
 
-    # by default load all available files and convert to array
-    type_data = {}
-    for cross_type in types:
-        label = type_label[cross_type]
-        data = []
-        type_data[cross_type] = data
-        for file in type_files[cross_type]:
-            array = _load_image_as_array(path + "work_type_" + cross_type + "/" + file)
-            data.append((array, label))
+    # if data files are decompressed in the given path, much slower, needs "import os"
+    # type_files = {cross_type: os.listdir(path + "work_type_" + cross_type) for cross_type in types}
 
+    # Read the actual data, build tuples of (data, label, filename)
+    tar = tarfile.open(path, mode="r:gz")
+    type_data = {cross_type:[] for cross_type in types}
+    for member in tar.getmembers():
+        if member.isfile():
+            f = tar.extractfile(member)
+            for cross_type in types:
+                if member.name.startswith("work_type_" + cross_type):
+                    label = type_label[cross_type]
+                    array = _load_image_as_array(f)
+                    type_data[cross_type].append((array, label, member.name))
+                    break
+    tar.close()
+
+    # Now randomly draw a fraction of the data to use for testing the trained network
     test_data_fraction = 0.25
     training_data = []
     test_data = []
@@ -30,7 +41,6 @@ def load_data(path="/home/daniel/PycharmProjects/machinelearning/data/crosses/",
     # shuffle type data to not have fixed test data
     for cross_type in types:
         random.shuffle(type_data[cross_type])
-    #type_data["empty"] = type_data["empty"][:int(len(type_data["crossed"]) * 1.2)]
     for cross_type in types:
         data = type_data[cross_type]
         sep = int(test_data_fraction * len(data))
@@ -41,6 +51,7 @@ def load_data(path="/home/daniel/PycharmProjects/machinelearning/data/crosses/",
     random.shuffle(training_data)
     random.shuffle(test_data)
 
+    # Some debug information about the size of training and test data
     print("Trainingdata size:", len(training_data), "Test data size:", len(test_data))
     print("Training data empty samples:", sum(1 if np.argmax(data[1],axis=0) == type_label_value["empty"] else 0 for data in training_data))
     print("Training data crossed samples:",
@@ -52,8 +63,9 @@ def load_data(path="/home/daniel/PycharmProjects/machinelearning/data/crosses/",
 
     return training_data, test_data
 
-def _load_image_as_array(image_path):
-    img = Image.open(image_path)
+
+def _load_image_as_array(image_file):
+    img = Image.open(image_file)
     pixels = img.load()
     width, height = img.size
     pixel_list = []

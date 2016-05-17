@@ -60,6 +60,11 @@ def demo_crosses_simple(training_data, test_data, eta, cost, neuron):
 
     net.SGD(training_data, 60, 50, eta, evaluation_data=test_data)
 
+def run_simple():
+    training, test = load_crosses()
+    import network_simple as network
+    demo_crosses_simple(training, test, 0.1, network.CrossEntropyCost, network.SigmoidNeuron)
+
 if __name__ == "__main__":
-    #demo_crosses_simple()
+    run_simple()
     pass

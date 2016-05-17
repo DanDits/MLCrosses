@@ -10,7 +10,7 @@ class CrossEntropyCost: # works best with sigmoid neuron
     @staticmethod
     def delta(z, y, Neuron): # derivative of fn(a(z),y) wrt. z; vector result for starting backpropagation
         if Neuron is SigmoidNeuron:
-            return Neuron.activation(z) - y
+            return Neuron.activation(z) - y # simplified, as in sigmoid case: activation prime(z) = a*(1-a)
         else:
             a = Neuron.activation(z)
             return np.nan_to_num((a - y) * Neuron.activation_prime(z) / (a * (1 - a)))
@@ -63,15 +63,18 @@ class Network:
         # Feed data vector in network, giving out an estimate
         return self.neuron.activation(np.dot(self.weight, x) + self.bias)
 
-    def accuracy(self, data):
+    def accuracy(self, data, print_errors=True):
         # given the vectorized data, check how many estimates match the actual targets
-        results = [(np.argmax(self.feedforward(x)), np.argmax(y)) for (x, y) in data]
-        return sum(int(x == y) for (x, y) in results)
+        errors = [name for (x, y, name) in data if int((np.argmax(self.feedforward(x)) != np.argmax(y)))]
+        if print_errors:
+            for name in errors:
+                print(name)
+        return len(data) - len(errors)
 
     def total_cost(self, data):
         # Given vectorized data, calculate the cost to the estimate
         cost = 0.
-        for x, y in data:
+        for x, y, _ in data:
             a = self.feedforward(x)
             cost += self.cost.fn(a, y) / len(data)
         return cost
@@ -92,7 +95,7 @@ class Network:
         # update network weight and bias using gradient descent
         nabla_b = np.zeros(self.bias.shape)
         nabla_w = np.zeros(self.weight.shape)
-        for x, y in mini_batch:
+        for x, y, _ in mini_batch:
             delta_nabla_b, delta_nabla_w = self.backprop(x, y)
             nabla_b += delta_nabla_b
             nabla_w += delta_nabla_w
