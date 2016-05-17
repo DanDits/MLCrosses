@@ -43,8 +43,8 @@ class LinearNeuron():
     @staticmethod
     def activation_prime(z):
         x = np.ones(z.shape)
-        x[np.where(x < -0.5)] = 0.
-        x[np.where(x > 0.5)] = 0.
+        x[np.where(z < -0.5)] = 0.
+        x[np.where(z > 0.5)] = 0.
         return x
 
 

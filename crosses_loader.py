@@ -2,10 +2,9 @@ from PIL import Image
 import numpy as np
 import random
 import tarfile
-from math import ceil
 
 def load_data(path="/home/daniel/PycharmProjects/machinelearning/data/crosses/crosses.tar.gz",
-              shades_of_grey=256, # in range [2,256]
+              grey_transform=None,
               use_cancelled=False):
 
     # Types are the classes of crosses we want to classify
@@ -31,7 +30,7 @@ def load_data(path="/home/daniel/PycharmProjects/machinelearning/data/crosses/cr
             for cross_type in types:
                 if member.name.startswith("work_type_" + cross_type):
                     label = type_label[cross_type]
-                    array = _load_image_as_array(f, shades_of_grey)
+                    array = _load_image_as_array(f, grey_transform)
                     type_data[cross_type].append((array, label, member.name))
                     break
     tar.close()
@@ -67,19 +66,17 @@ def load_data(path="/home/daniel/PycharmProjects/machinelearning/data/crosses/cr
     return training_data, test_data
 
 
-def _load_image_as_array(image_file, shades_of_grey):
+def _load_image_as_array(image_file, grey_transform):
     img = Image.open(image_file)
     pixels = img.load()
     width, height = img.size
     pixel_list = []
-    # if shades_of_grey is 256 (so use every shade!), grey_size is 1 and biggest_value is 255
-    grey_size = ceil(256 / shades_of_grey)
-    biggest_value = ceil(255 / grey_size)
     for i in range(width):
         for j in range(height):
-            value = int(sum(pixels[i, j]) / 3.) # as the images are RGB and not completely in shades of grey
-            # Important! Normalize pixel data to range [0,1] by dividing by biggest_value.
-            value = ceil(value / grey_size) / biggest_value
+            # Important! Normalize pixel data to range [0,1] by dividing by 255.
+            value = sum(pixels[i, j]) / (3. * 255.) # as the images are RGB and not completely in shades of grey
+            if grey_transform:
+                value = grey_transform(value)
             pixel_list.append(value)
     array = np.array(pixel_list, dtype="float64", copy=False)
     return array.reshape((len(pixel_list), 1))
