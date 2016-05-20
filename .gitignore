@@ -6,7 +6,6 @@ __pycache__/
 
 # Latex extensions
 *.out
-*.gz
 *.log
 *.aux
 *.backup
