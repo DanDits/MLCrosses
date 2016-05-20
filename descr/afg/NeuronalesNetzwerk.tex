@@ -1,0 +1,27 @@
+\vspace{-1.5em}
+
+Angekreuzt sein oder nicht angekreuzt sein, das ist hier die Frage. 
+Wir stehen also vor einem \emph{binärem Klassifizierungsproblem}.\\
+Für solche (und viele anderen) sind in den letzten Jahren die sogenannten \emph{Deep neural networks} immer beliebter geworden. Dieser Algorithmus schafft es, gefüttert mit bereits klassifizierten Daten, durch automatisches Lernen ein Modell zu finden.
+
+
+Ziel ist es, eine eigene kleine Implementierung eines sehr flachen neuronalen Netzwerkes zu verwenden. 
+Als \emph{Bonusaufgabe}(!) ist es ebenfalls möglich das Netzwerk tiefer und mächtiger zu machen, dies ist aber für unser Problem nicht nötig.\\
+
+Im Folgenden ist die mathematische Beschreibung eines tiefen neuronalen Netzwerks gegeben. Für den einfachen flachen Fall gilt $s=1$.\\
+Zu Eingabedaten $x\in \R^n$, $n_0=n$, $n_s=m$ und $a_0=x$ berechnen wir iterativ 
+$$z_j=W_ja_{j-1} + b_j,\;a_j=\sigma_j(z_j),\;j=1,\dots,s$$
+Dabei ist für $j=1,\dots,s$:
+\begin{itemize}
+ \item $W_j \in \R^{n_{j-1}\times n_j}$ die Gewichtsmatrix
+ \item $b_j \in \R^{n_j}$ der Biasvektor
+ \item $\sigma_j \colon \R^{n_j} \to [0,1]^{n_j}$ die vektorisierte Aktivierungsfunktion $\sigma \colon \R \to \R$ des Neurons
+\end{itemize}
+Diesen Vorgang $x$ iterativ durch das Netzwerk zu schicken wird \emph{feedforward} genannt. Man erhält dann die Vorhersage $a=a_s$ des Modells.\\
+
+Ziel ist es anhand von vielen bekannten Trainingsdaten $(x,y)\in \R^n \times \R^m$ die Gewichte $W_j$ und den Bias $b_j$ automatisch zu optimieren.
+Daher benötigen wir eine zu optimierende Kostenfunktion $c\colon \R^m \to \R_{\ge 0}$, die stetig differenzierbar ist.\\
+\todo{Beschreibung der Algorithmusstruktur für s=1!? (Stochastic Gradient Descent, ohne große Erklärung)}\\
+\todo{Initialisierung Gewichte std normalverteilt, geteilt durch Wurzel(n), Bias std normalverteilt}\\
+\todo{Ausgabe=vektorisierte Binärzahl 1 und 2, also m=2, nehme größeren Eintrag als Klassifizierung}\\
+\todo{Eingabedaten=auf [0,1] normalisierte Grauwerte der Pixel als Vektor}

@@ -4,6 +4,13 @@ __pycache__/
 *$py.class
 .idea/
 
+# Latex extensions
+*.out
+*.gz
+*.log
+*.aux
+*.backup
+
 # C extensions
 *.so
 

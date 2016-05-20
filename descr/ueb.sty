@@ -1,0 +1,99 @@
+\hoffset -1.7cm
+\voffset -3cm
+
+\setlength{\parindent}{0cm}
+\setlength{\columnsep}{1.5cm}
+\addtolength{\textheight}{5cm}
+\addtolength{\textwidth}{3cm}
+\setlength{\parskip}{1ex}
+\pagestyle{empty}
+
+
+% Header
+\def\kopf#1#2{
+\begin{minipage}[b]{2cm}
+\includegraphics[scale=.25]{KITlogo_RGB}
+\end{minipage}\hspace{0.4cm}\begin{minipage}[b]{11cm}
+\textbf{Institut f\"ur Angewandte und Numerische Mathematik} ~\\\small{Sommersemester 2016} \\
+% Dozent
+Dr.~Daniel Wei\ss, Dipl.-Math.~Johannes Ernesti
+\end{minipage}\\[-0.3cm]
+% horizontale Linie
+\rule{0.47\textwidth}{0.4pt}\\[-0.3cm]
+
+% Veranstaltung, �bungsblatt mit Nummer, Datum
+{\Large \textbf{Einf\"uhrung in Python}} \hfill
+{\textbf{Abschlussprojekt #1}} #2 \\%[0.5cm]
+}
+
+\def\kopftut#1#2{
+\begin{minipage}[b]{2cm}
+\includegraphics[scale=.25]{KITlogo_RGB}
+\end{minipage}\hspace{0.4cm}\begin{minipage}[b]{11cm}
+\textbf{Institut f\"ur Angewandte und Numerische Mathematik} ~\\\small{Sommersemester 2016} \\
+% Dozent
+Dr.~Daniel Wei\ss, Dipl.-Math.~Johannes Ernesti
+\end{minipage}\\[-0.3cm]
+% horizontale Linie
+\rule{0.47\textwidth}{0.4pt}\\[-0.3cm]
+
+% Veranstaltung, �bungsblatt mit Nummer, Datum
+\textbf{Einf\"uhrung in Python} \\[0.5em]
+{\large \textbf{Tutorium #1}} \hfill #2 \\[0.5cm]
+}
+
+
+
+\def\inputauf#1#2#3
+{ % Aufgabenumgebung
+\underline{\bf Aufgabe #1} {\bf (#3)}\\
+\noindent
+\input{afg/#2}\hspace{0cm}\\[-0.2cm]
+}
+
+\def\inputaufpunkte#1#2#3#4
+{ % Aufgabenumgebung
+\underline{\bf Aufgabe #1} {\bf (#3)} \hfill (#4 Punkte)~\\
+\noindent
+\input{afg/#2}\hspace{0cm}\\[0.2cm]
+}
+
+\def\inputauftut#1#2#3
+{ % Aufgabenumgebung
+\underline{\bf Tutoriumsaufgabe #1} {\bf (#3)} ~\\
+\noindent
+\input{afg/#2}\hspace{0cm}\\[0.5cm]
+}
+
+\def\inputloesung#1#2
+{ % Aufgabenumgebung
+\underline{\bf L\"osung zur Aufgabe #1} ~\\
+\noindent
+\input{afg/#2}\hspace{0cm}\\[0.5cm]
+}
+
+
+
+\def\inputpauf#1#2
+{ % Programmieraufgabenumgebung
+\underline{\bf Programmieraufgabe #1} \hfill (freiwillig)~\\
+\noindent
+\input{prg/#2}\hspace{0cm}\\[0.8cm]
+}
+
+\def\fuss#1#2{
+% horizontale Linie
+\rule{0.47\textwidth}{0.4pt}\\
+
+%\vspace*{0.6cm}
+\textbf{Service/Material:} \href{http://www.math.kit.edu/ianm3/lehre/einfpython2016s/}
+{http://www.math.kit.edu/ianm3/lehre/einfpython2016s/}
+}
+
+\def\fussprog#1{
+% horizontale Linie
+\rule{0.47\textwidth}{0.4pt}\\
+\textbf{Abgabe:} Das Programmierpraktikum findet jeden Donnerstag, 16-18 Uhr im Poolraum Geb. 01.93, Kronenstra\ss e 32, Raum 101 statt.
+Dort k\"onnen Sie Ihr Programm abgegen und erhalten Hilfe beim Programmieren. 
+}
+
