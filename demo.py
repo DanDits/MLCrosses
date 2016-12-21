@@ -70,8 +70,8 @@ def transform(grey): # takes normalized greyness values in range [0,1]
 def run_simple():
     training, test = load_crosses(grey_transform=None)
     import network_simple as network
-    demo_crosses_simple(training, test, 0.001, network.QuadraticCost, network.IdentityNeuron) # Working but not best possible results
-    demo_crosses_simple(training, test, 0.0005, network.QuadraticCost, network.LinearNeuron) # Unreliable, hugely depends on starting weights being good as activation derivative is exactly zero often
+    #demo_crosses_simple(training, test, 0.001, network.QuadraticCost, network.IdentityNeuron) # Working but not best possible results
+    #demo_crosses_simple(training, test, 0.0005, network.QuadraticCost, network.LinearNeuron) # Unreliable, hugely depends on starting weights being good as activation derivative is exactly zero often
     demo_crosses_simple(training, test, 0.1, network.CrossEntropyCost, network.SigmoidNeuron) # Reliable and fast
 
 if __name__ == "__main__":
